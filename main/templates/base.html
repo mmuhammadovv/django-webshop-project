@@ -45,7 +45,7 @@
 						<a class="nav-link text-white" href="{% url 'brand-list' %}">Brands</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link text-white" href=""><i class="fa fa-shopping-cart"></i> Cart (<span
+						<a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Cart (<span
 								class="cart-list">{{request.session.cartdata|length}}</span>)</a>
 					</li>
 					<li class="nav-item dropdown">
@@ -56,10 +56,13 @@
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 							{% if user.is_authenticated %}
 							<a class="dropdown-item" href="">Dashboard</a>
-							<a class="dropdown-item" href="">Logout</a>
+							<form class="dropdown-item" action="{% url 'logout' %}" method="post">
+								{% csrf_token %}
+								<button type="submit" class="border-none bg-danger text-white">Logout</button>
+							</form>							
 							{% else %}
-							<a class="dropdown-item" href="">Login</a>
-							<a class="dropdown-item" href="">Signup</a>
+							<a class="dropdown-item" href="{% url 'login' %}">Login</a>
+							<a class="dropdown-item" href="{% url 'signup' %}">Signup</a>
 							{% endif %}
 						</div>
 					</li>
