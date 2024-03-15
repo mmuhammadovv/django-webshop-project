@@ -22,8 +22,8 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('checkout', checkout,name='checkout'),
     path('paypal/', include('paypal.standard.ipn.urls')),
-    path('payment-done/', views.payment_done, name='payment_done'),
-    path('payment-cancelled/', views.payment_canceled, name='payment_cancelled'),
+    path('payment-done/', payment_done, name='payment_done'),
+    path('payment-cancelled/', payment_canceled, name='payment_cancelled'),
 
 
 

@@ -34,12 +34,12 @@
 			<tr>
 				<td colspan="2"></td>
 				<th>Total</th>
-				<th>${{total_amt}}</th>
+				<th>Rs. {{total_amt}}</th>
 			</tr>
 			{% if totalitems %}
 			<tr>
 				<td colspan="4" align="right">
-					<a href="">Payment</a>
+					{{form.render}}
 				</td>
 			</tr>
 			{% endif %}
