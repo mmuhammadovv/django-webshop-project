@@ -87,7 +87,7 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	      	<form method="post" id="addForm" action="">
+	      	<form method="post" id="addForm" action="{% url 'save-review' data.id %}">
 	      		{% csrf_token %}
 		      	<table class="table table-bordered">
 		      		{{reviewForm.as_table}}

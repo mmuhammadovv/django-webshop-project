@@ -24,6 +24,13 @@ urlpatterns = [
     path('paypal/', include('paypal.standard.ipn.urls')),
     path('payment-done/', payment_done, name='payment_done'),
     path('payment-cancelled/', payment_canceled, name='payment_cancelled'),
+    path('save-review/<int:pid>',save_review, name='save-review'),
+    path('my-dashboard',my_dashboard, name='my_dashboard'),
+    path('my-orders',my_orders, name='my_orders'),
+    path('my-orders-items/<int:id>',my_order_items, name='my_order_items'),
+    path('add-wishlist',add_wishlist, name='add_wishlist'),
+    path('my-wishlist',my_wishlist, name='my_wishlist'),
+    path('my-reviews',my_reviews, name='my-reviews'),
 
 
 
