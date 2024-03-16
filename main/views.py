@@ -253,15 +253,12 @@ def checkout(request):
 	if 'cartdata' in request.session:
 		for p_id,item in request.session['cartdata'].items():
 			totalAmt+=int(item['qty'])*float(item['price'])
-		# Order
 		order=CartOrder.objects.create(
 				user=request.user,
 				total_amt=totalAmt
 			)
-		# End
 		for p_id,item in request.session['cartdata'].items():
 			total_amt+=int(item['qty'])*float(item['price'])
-			# OrderItems
 			items=CartOrderItems.objects.create(
 				order=order,
 				invoice_no='INV-'+str(order.id),
@@ -271,8 +268,6 @@ def checkout(request):
 				price=item['price'],
 				total=float(item['qty'])*float(item['price'])
 				)
-			# End
-		# Process Payment
 		host = request.get_host()
 		paypal_dict = {
 		    'business': settings.PAYPAL_RECEIVER_EMAIL,
@@ -324,6 +319,7 @@ def save_review(request,pid):
 
 
 import calendar
+@login_required(login_url='login')
 def my_dashboard(request):
 	orders=CartOrder.objects.annotate(month=ExtractMonth('order_dt')).values('month').annotate(count=Count('id')).values('month','count')
 	monthNumber=[]
@@ -333,10 +329,15 @@ def my_dashboard(request):
 		totalOrders.append(d['count'])
 	return render(request, 'user/dashboard.html',{'monthNumber':monthNumber,'totalOrders':totalOrders})
 
+
+@login_required(login_url='login')
 def my_orders(request):
 	orders=CartOrder.objects.filter(user=request.user).order_by('-id')
 	return render(request, 'user/orders.html',{'orders':orders})
 
+
+
+@login_required(login_url='login')
 def my_order_items(request,id):
 	order=CartOrder.objects.get(pk=id)
 	orderitems=CartOrderItems.objects.filter(order=order).order_by('-id')
@@ -344,6 +345,7 @@ def my_order_items(request,id):
 
 
 
+@login_required(login_url='login')
 def add_wishlist(request):
 	pid=request.GET['product']
 	product=Product.objects.get(pk=pid)
@@ -363,10 +365,80 @@ def add_wishlist(request):
 		}
 	return JsonResponse(data)
 
+
+@login_required(login_url='login')
 def my_wishlist(request):
 	wlist=Wishlist.objects.filter(user=request.user).order_by('-id')
 	return render(request, 'user/wishlist.html',{'wlist':wlist})
 
+
+
+@login_required(login_url='login')
 def my_reviews(request):
 	reviews=ProductReview.objects.filter(user=request.user).order_by('-id')
 	return render(request, 'user/reviews.html',{'reviews':reviews})
+
+
+
+
+@login_required(login_url='login')
+def my_addressbook(request):
+	addbook=UserAddressBook.objects.filter(user=request.user).order_by('-id')
+	return render(request, 'user/addressbook.html',{'addbook':addbook})
+
+
+@login_required(login_url='login')
+def save_address(request):
+	msg=None
+	if request.method=='POST':
+		form=AddressBookForm(request.POST)
+		if form.is_valid():
+			saveForm=form.save(commit=False)
+			saveForm.user=request.user
+			if 'status' in request.POST:
+				UserAddressBook.objects.update(status=False)
+			saveForm.save()
+			msg='Data has been saved'
+	form=AddressBookForm
+	return render(request, 'user/add-address.html',{'form':form,'msg':msg})
+
+
+
+@login_required(login_url='login')
+def activate_address(request):
+	a_id=str(request.GET['id'])
+	UserAddressBook.objects.update(status=False)
+	UserAddressBook.objects.filter(id=a_id).update(status=True)
+	return JsonResponse({'bool':True})
+
+
+
+@login_required(login_url='login')
+def edit_profile(request):
+	msg=None
+	if request.method=='POST':
+		form=ProfileForm(request.POST,instance=request.user)
+		if form.is_valid():
+			form.save()
+			msg='Data has been saved'
+	form=ProfileForm(instance=request.user)
+	return render(request, 'user/edit-profile.html',{'form':form,'msg':msg})
+
+
+
+
+@login_required(login_url='login')
+def update_address(request,id):
+	address=UserAddressBook.objects.get(pk=id)
+	msg=None
+	if request.method=='POST':
+		form=AddressBookForm(request.POST,instance=address)
+		if form.is_valid():
+			saveForm=form.save(commit=False)
+			saveForm.user=request.user
+			if 'status' in request.POST:
+				UserAddressBook.objects.update(status=False)
+			saveForm.save()
+			msg='Data has been saved'
+	form=AddressBookForm(instance=address)
+	return render(request, 'user/update-address.html',{'form':form,'msg':msg})

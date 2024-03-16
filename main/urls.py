@@ -31,6 +31,11 @@ urlpatterns = [
     path('add-wishlist',add_wishlist, name='add_wishlist'),
     path('my-wishlist',my_wishlist, name='my_wishlist'),
     path('my-reviews',my_reviews, name='my-reviews'),
+    path('my-addressbook',my_addressbook, name='my-addressbook'),
+    path('add-address',save_address, name='add-address'),
+    path('activate-address',activate_address, name='activate-address'),
+    path('update-address/<int:id>',update_address, name='update-address'),
+    path('edit-profile',edit_profile, name='edit-profile'),
 
 
 

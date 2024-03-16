@@ -1,4 +1,4 @@
-from .models import Product,ProductAttribute
+from .models import ProductAttribute
 from django.db.models import Min,Max
 def get_filters(request):
 	minMaxPrice=ProductAttribute.objects.aggregate(Min('price'),Max('price'))
